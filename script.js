@@ -78,7 +78,6 @@ class App {
 
 
         let controller = this.renderer.xr.getController(0);
-        controller.addEventListener('tap', onSelect);
         this.scene.add( controller );
 
         // const boxGeometry = new THREE.BoxGeometry();
