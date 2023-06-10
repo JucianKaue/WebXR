@@ -30,20 +30,38 @@ scene.add(ambientLight);
 // light.position.set( 1, 1, 1 ).normalize();
 // scene.add( light );
 
+console.log('selected');
+
+    const loader = new GLTFLoader();
+
+    loader.load(
+        'cat.glb',
+        function (gltf) {
+            let cat = gltf.scene;
+
+            cat.scale.set(4, 4, 4);
+            cat.position.set(0, 0, -0.3).applyMatrix4(controller.matrixWorld);
+            scene.add(cat);
+            renderer.render(scene, camera);
+
+        }, undefined, undefined
+    );
+
 function onSelect() {
     console.log('selected');
 
     const loader = new GLTFLoader();
 
     loader.load(
-        'cat.gltf',
+        'cat.glb',
         function (gltf) {
-            const object = gltf.scene;
-            object.scale.set(4, 4, 4);
-            object.position.set(0, 0, -0.3).applyMatrix4(controller.matrixWorld);
-            scene.add(object);
+            let cat = gltf.scene;
+
+            cat.scale.set(4, 4, 4);
+            cat.position.set(0, 0, -0.3).applyMatrix4(controller.matrixWorld);
+            scene.add(cat);
             renderer.render(scene, camera);
-            
+
         }, undefined, undefined
     );
 }
@@ -59,7 +77,13 @@ box.position.set(0, 3, 0);
 scene.add(box);
 
 renderer.xr.enabled = true;
-
 document.body.appendChild(ARButton.createButton(renderer));
+
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
 renderer.render(scene, camera);
