@@ -78,7 +78,7 @@ class App {
 
 
         let controller = this.renderer.xr.getController(0);
-        this.scene.add( controller );
+        this.scene.add(controller);
 
         // const boxGeometry = new THREE.BoxGeometry();
         // const boxMaterial = new THREE.MeshBasicMaterial({color: 0x00FF00});
