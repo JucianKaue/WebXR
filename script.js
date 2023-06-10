@@ -18,7 +18,6 @@ class App {
 
         // Configurações do cenario
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color( 0x505050 );
 
         // Adiciona camera
         this.camera = new THREE.PerspectiveCamera(
