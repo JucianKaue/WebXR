@@ -54,13 +54,11 @@ class App {
         loader.load(
             'cat.glb',
             function(gltf) {
-
-                self.cat = gltf.scene.children[0];
+                self.cat = gltf.scene;
                 self.cat.scale.set(5, 5, 5)
                 self.cat.position.set(0, -1, -3)
                 console.log(gltf.animations[0])
                 
-
                 self.mixer = new THREE.AnimationMixer(self.cat);
                 self.action = self.mixer.clipAction(gltf.animations[0]);
 
@@ -70,78 +68,24 @@ class App {
                 self.scene.add(self.cat);
 
                 self.loadingBar.visible = false;
-
                 self.renderer.setAnimationLoop(self.render.bind(self));
-            }, undefined, undefined
+            }, function(xhr) {
+                self.loadingBar.progress = (xhr.loaded / xhr.total);
+            }, function(err) {
+                console.log('An error accured')
+            }
         )
 
-        
-
-        
-
-
-        
-        // const self = this;
-        // const loader = new GLTFLoader();
-
-        // let loadingBar = new LoadingBar();
-        // loader.load(
-        //     'cat.glb',
-        //     function (gltf) {
-
-        //         self.cat = gltf.scene.children[0];
-        //         self.cat.scale.set(4, 4, 4);
-        //         self.cat.position.set(0, 0, 0);
-        //         console.log(self.cat)
-
-        //         self.mixer = new THREE.AnimationMixer(self.cat);
-        //         self.action = self.mixer.clipAction(gltf.animations[0]);
-        //         self.action.enabled = true;
-        //         self.action.play();
-
-        //         // cat.visible = true;
-        //         self.scene.add(self.cat);
-
-        //         renderer.render(self.scene, camera);
-
-        //         loadingBar.visible = false;
-        //     }, function(xhr) {
-        //         loadingBar.progress = (xhr.loaded / xhr.total);
-        //     }, function(err) {
-        //         console.log('An error occured');
-        //     }
-        // );
-
-        // function onSelect() {
-        //     console.log('selected');
-
-        //     const loader = new GLTFLoader();
-
-        //     loader.load(
-        //         'cat.glb',
-        //         function (gltf) {
-        //             let cat = gltf.scene;
-
-        //             cat.scale.set(1, 1, 1);
-        //             cat.position.set(0, 0, 0).applyMatrix4(controller.matrixWorld);
-        //             cat.visible = true;
-        //             scene.add(cat);
-        //             renderer.render(scene, camera);
-
-        //         }, undefined, function(err) {
-        //             console.log('An error occured.')
-        //         }
-        //     );
-        // }
 
         let controller = this.renderer.xr.getController(0);
+        controller.addEventListener('tap', onSelect);
         this.scene.add( controller );
 
-        const boxGeometry = new THREE.BoxGeometry();
-        const boxMaterial = new THREE.MeshBasicMaterial({color: 0x00FF00});
-        const box = new THREE.Mesh(boxGeometry, boxMaterial);
-        box.position.set(0, 3, 0);
-        this.scene.add(box);
+        // const boxGeometry = new THREE.BoxGeometry();
+        // const boxMaterial = new THREE.MeshBasicMaterial({color: 0x00FF00});
+        // const box = new THREE.Mesh(boxGeometry, boxMaterial);
+        // box.position.set(0, 3, 0);
+        // this.scene.add(box);
 
         this.renderer.xr.enabled = true;
         document.body.appendChild(ARButton.createButton(this.renderer));
@@ -158,12 +102,11 @@ class App {
     }
 
     render() {
-        const dt = this.clock.getDelta();
+        let dt = this.clock.getDelta();
         this.stats.update();
-        // this.mixer.update(dt);
+        this.mixer.update(dt);
         this.renderer.render(this.scene, this.camera);
     }
-
 }
 
 export { App };
