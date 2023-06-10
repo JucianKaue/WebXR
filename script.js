@@ -1,89 +1,170 @@
 import * as THREE from './libs/three/three.module.js';
 import { GLTFLoader } from './libs/three/jsm/GLTFLoader.js';
+import { DRACOLoader} from './libs/three/jsm/DRACOLoader.js';
 import { OrbitControls } from './libs/three/jsm/OrbitControls.js';
-import { ARButton } from './libs/three/jsm/ARButton.js'
+import { ARButton } from './libs/three/jsm/ARButton.js';
+import { LoadingBar } from './libs/LoadingBar.js';
+import { Stats } from './libs/stats.module.js';
 
-const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.outputEncoding = THREE.sRGBEncoding;
 
-document.body.appendChild(renderer.domElement);
+class App {
+    constructor() {
+        // Configurações do renderizador
+        this.renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
+        document.body.appendChild(this.renderer.domElement);
 
-const scene = new THREE.Scene();
-scene.background = new THREE.Color( 0x505050 );
+        // Configurações do cenario
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color( 0x505050 );
 
-const camera = new THREE.PerspectiveCamera(
-    75, 
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-);
-camera.position.set(0, 2, 5);
+        // Adiciona camera
+        this.camera = new THREE.PerspectiveCamera(
+            75, 
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+        this.camera.position.set(0, 2, 5);
 
-// const axesHelper = new THREE.AxesHelper(3);
-// scene.add(axesHelper);
+        // const axesHelper = new THREE.AxesHelper(3);
+        // scene.add(axesHelper);
 
-const ambientLight = new THREE.AmbientLight(0xFFFFFF);
-scene.add(ambientLight);
+        // Adiciona luz ambiente
+        const ambientLight = new THREE.AmbientLight(0xFFFFFF);
+        this.scene.add(ambientLight);
 
-// const light = new THREE.DirectionalLight( 0xffffff );
-// light.position.set( 1, 1, 1 ).normalize();
-// scene.add( light );
+        // const light = new THREE.DirectionalLight( 0xffffff );
+        // light.position.set( 1, 1, 1 ).normalize();
+        // scene.add( light );
 
-console.log('selected');
+        this.stats = new Stats();
+        document.body.appendChild(this.stats.dom);
 
-    const loader = new GLTFLoader();
+        this.clock = new THREE.Clock();
+       
+        const loader = new GLTFLoader();
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath('./libs/three/jsm/draco/');
+        this.loadingBar = new LoadingBar();
 
-    loader.load(
-        'cat.glb',
-        function (gltf) {
-            let cat = gltf.scene;
+        const self = this;
 
-            cat.scale.set(4, 4, 4);
-            cat.position.set(0, 0, -0.3).applyMatrix4(controller.matrixWorld);
-            scene.add(cat);
-            renderer.render(scene, camera);
+        loader.load(
+            'cat.glb',
+            function(gltf) {
 
-        }, undefined, undefined
-    );
+                self.cat = gltf.scene.children[0];
+                self.cat.scale.set(5, 5, 5)
+                self.cat.position.set(0, -1, -3)
+                console.log(gltf.animations[0])
+                
 
-function onSelect() {
-    console.log('selected');
+                self.mixer = new THREE.AnimationMixer(self.cat);
+                self.action = self.mixer.clipAction(gltf.animations[0]);
 
-    const loader = new GLTFLoader();
+                self.action.enabled = true;
+                self.action.play();
 
-    loader.load(
-        'cat.glb',
-        function (gltf) {
-            let cat = gltf.scene;
+                self.scene.add(self.cat);
 
-            cat.scale.set(4, 4, 4);
-            cat.position.set(0, 0, -0.3).applyMatrix4(controller.matrixWorld);
-            scene.add(cat);
-            renderer.render(scene, camera);
+                self.loadingBar.visible = false;
 
-        }, undefined, undefined
-    );
+                self.renderer.setAnimationLoop(self.render.bind(self));
+            }, undefined, undefined
+        )
+
+        
+
+        
+
+
+        
+        // const self = this;
+        // const loader = new GLTFLoader();
+
+        // let loadingBar = new LoadingBar();
+        // loader.load(
+        //     'cat.glb',
+        //     function (gltf) {
+
+        //         self.cat = gltf.scene.children[0];
+        //         self.cat.scale.set(4, 4, 4);
+        //         self.cat.position.set(0, 0, 0);
+        //         console.log(self.cat)
+
+        //         self.mixer = new THREE.AnimationMixer(self.cat);
+        //         self.action = self.mixer.clipAction(gltf.animations[0]);
+        //         self.action.enabled = true;
+        //         self.action.play();
+
+        //         // cat.visible = true;
+        //         self.scene.add(self.cat);
+
+        //         renderer.render(self.scene, camera);
+
+        //         loadingBar.visible = false;
+        //     }, function(xhr) {
+        //         loadingBar.progress = (xhr.loaded / xhr.total);
+        //     }, function(err) {
+        //         console.log('An error occured');
+        //     }
+        // );
+
+        // function onSelect() {
+        //     console.log('selected');
+
+        //     const loader = new GLTFLoader();
+
+        //     loader.load(
+        //         'cat.glb',
+        //         function (gltf) {
+        //             let cat = gltf.scene;
+
+        //             cat.scale.set(1, 1, 1);
+        //             cat.position.set(0, 0, 0).applyMatrix4(controller.matrixWorld);
+        //             cat.visible = true;
+        //             scene.add(cat);
+        //             renderer.render(scene, camera);
+
+        //         }, undefined, function(err) {
+        //             console.log('An error occured.')
+        //         }
+        //     );
+        // }
+
+        let controller = this.renderer.xr.getController(0);
+        this.scene.add( controller );
+
+        const boxGeometry = new THREE.BoxGeometry();
+        const boxMaterial = new THREE.MeshBasicMaterial({color: 0x00FF00});
+        const box = new THREE.Mesh(boxGeometry, boxMaterial);
+        box.position.set(0, 3, 0);
+        this.scene.add(box);
+
+        this.renderer.xr.enabled = true;
+        document.body.appendChild(ARButton.createButton(this.renderer));
+
+        window.addEventListener('resize', () => {
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
+
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+
+        this.render()
+    }
+
+    render() {
+        const dt = this.clock.getDelta();
+        this.stats.update();
+        // this.mixer.update(dt);
+        this.renderer.render(this.scene, this.camera);
+    }
+
 }
 
-let controller = renderer.xr.getController(0);
-controller.addEventListener('select', onSelect)
-scene.add( controller );
-
-const boxGeometry = new THREE.BoxGeometry();
-const boxMaterial = new THREE.MeshBasicMaterial({color: 0x00FF00});
-const box = new THREE.Mesh(boxGeometry, boxMaterial);
-box.position.set(0, 3, 0);
-scene.add(box);
-
-renderer.xr.enabled = true;
-document.body.appendChild(ARButton.createButton(renderer));
-
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-renderer.render(scene, camera);
+export { App };

@@ -5,12 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Three.js</title>
     <style>
-        body {
+        body{
             margin: 0;
+            padding: 0;
+        }
+        #btns{
+            position: absolute;
+            right: 10px;
+            top: 10px;
         }
     </style>
 </head>
 <body>
-    <script src="script.js" type="module"></script>
+    <div id="btns">
+        <button id="btn1">hand</button>
+        <button id="btn2">Dance</button>
+        <button id="btn3">Die</button>
+        <button id="btn4">Walk</button>
+    </div>
+    <script type="module">
+        import {App} from './script.js';
+
+        document.addEventListener("DOMContentLoaded", function(){
+            const app = new App();
+            window.app = app;
+        })
+    </script>
 </body>
 </html>
