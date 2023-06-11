@@ -2,7 +2,7 @@ import * as THREE from '../libs/three/three.module.js';
 import { GLTFLoader } from '../libs/three/jsm/GLTFLoader.js';
 import { DRACOLoader} from '../libs/three/jsm/DRACOLoader.js';
 import { OrbitControls } from '../libs/three/jsm/OrbitControls.js';
-import { ARButton } from './ARButton.js';
+import { ARButton } from '../libs/three/jsm/ARButton.js';
 import { LoadingBar } from '../libs/LoadingBar.js';
 import { Stats } from '../libs/stats.module.js';
 
@@ -87,7 +87,12 @@ class App {
         // this.scene.add(box);
 
         this.renderer.xr.enabled = true;
-        document.body.appendChild(ARButton.createButton(this.renderer));
+        this.button = ARButton.createButton(this.renderer);
+        this.button.style.backgroundImage = 'url("horto_resized.png")';
+        this.button.style.height = '32px';
+        this.button.style.width = '29px';
+        this.button.innerHTML = 'Iniciar';
+        document.body.appendChild(this.button);
 
         window.addEventListener('resize', () => {
             this.camera.aspect = window.innerWidth / window.innerHeight;

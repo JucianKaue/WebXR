@@ -4,7 +4,7 @@
  * @author NikLever / http://niklever.com
  */
 
-class ARButton{
+class VRButton{
 
 	constructor( renderer ) {
         this.renderer = renderer;
@@ -14,8 +14,8 @@ class ARButton{
             button.style.display = 'none';
             document.body.appendChild(button);
 
-            navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
-                supported ? this.showEnterAR(button) : this.showWebXRNorFound(button);
+            navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+                supported ? this.showEnterVR(button) : this.showWebXRNorFound(button);
             })
 		} else {
             const message = document.createElement('a');
@@ -42,7 +42,7 @@ class ARButton{
 
     }
 
-	showEnterAR( button ) {
+	showEnterVR( button ) {
         let currentSession = null;
 
         this.stylizeElement(button, true, 30, true);
@@ -51,17 +51,17 @@ class ARButton{
         button.style.right = '20px';
         button.style.width = '80px';
         button.style.cursor = 'pointer';
-        button.innerHTML = 'AR'
+        button.innerHTML = 'VR'
 
         button.onmouseenter = function() {
             button.style.fontSize = '30px';
-            button.innerHTML = 'ar';
+            button.innerHTML = 'vr';
             button.style.opacity = '1';
         }
 
         button.onmouseleave = function() {
             button.style.fontsize = '30px';
-            button.innerHTML = 'AR';
+            button.innerHTML = 'VR';
             button.style.opacity = '0.5';
         }
 
@@ -71,7 +71,7 @@ class ARButton{
             self.renderer.xr.setSession(session);
             self.stylizeElement(button, false, 12, false);
 
-            button.textContent = 'EXIT AR';
+            button.textContent = 'EXIT VR';
 
             currentSession = session;
         }
@@ -80,7 +80,7 @@ class ARButton{
             currentSession.removeEventListener('end', onSessionEnded);
 
             self.stylizeElement(button, true, 12, true);
-            button.textContent = 'ENTER AR';
+            button.textContent = 'ENTER VR';
 
             currentSession = null;
         }
@@ -88,7 +88,7 @@ class ARButton{
         button.onclick = function() {
             if (currentSession === null) {
                 const sessionInit = {optionalFeatures:['local-floor', 'bounded-floor']};
-                navigator.xr.requestSession('immersive-ar', sessionInit).then(onSessionStarted);
+                navigator.xr.requestSession('immersive-vr', sessionInit).then(onSessionStarted);
             } else {
                 currentSession.end();
             }
@@ -118,10 +118,11 @@ class ARButton{
         button.style.border = '';
         button.style.opacity = '1';
         button.style.fontSize = '13px';
-        button.textContent = 'AR not supported';
+        button.textContent = 'VR not supported';
     }
 
     stylizeElement( element, green = true, fontSize = 13, ignorePadding = false ) {
+
         element.style.position = 'absolute';
         element.style.bottom = '20px';
         if (!ignorePadding) element.style.padding = '12px 6px';
@@ -137,4 +138,4 @@ class ARButton{
     }
 };
 
-export { ARButton };
+export { VRButton };
