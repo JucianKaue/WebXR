@@ -91,7 +91,10 @@ class App {
         this.button.style.backgroundImage = 'url("horto_resized.png")';
         this.button.style.height = '32px';
         this.button.style.width = '29px';
-        this.button.innerHTML = 'Iniciar';
+
+        this.button.style.color = 'black';
+        this.button.style.fontWeight = '900';
+        this.button.textContent = 'INICIAR';
         document.body.appendChild(this.button);
 
         window.addEventListener('resize', () => {
