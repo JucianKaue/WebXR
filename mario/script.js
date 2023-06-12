@@ -26,7 +26,7 @@ class App {
             0.1,
             1000
         );
-        this.camera.position.set(0, 2, 5);
+        this.camera.position.set(0, 2, 10);
 
         // const axesHelper = new THREE.AxesHelper(3);
         // scene.add(axesHelper);
