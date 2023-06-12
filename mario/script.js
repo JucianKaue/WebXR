@@ -55,8 +55,8 @@ class App {
             'mario.glb',
             function(gltf) {
                 self.cat = gltf.scene;
-                self.cat.scale.set(5, 5, 5)
-                self.cat.position.set(0, -1, -3)
+                self.cat.scale.set(3, 3, 3)
+                self.cat.position.set(0, -2, -3)
                 console.log(gltf.animations[0])
                 
                 self.mixer = new THREE.AnimationMixer(self.cat);
