@@ -79,26 +79,16 @@ class App {
         let controller = this.renderer.xr.getController(0);
         this.scene.add(controller);
 
-        // const boxGeometry = new THREE.BoxGeometry();
-        // const boxMaterial = new THREE.MeshBasicMaterial({color: 0x00FF00});
-        // const box = new THREE.Mesh(boxGeometry, boxMaterial);
-        // box.position.set(0, 3, 0);
-        // this.scene.add(box);
-
         this.renderer.xr.enabled = true;
         this.button = ARButton.createButton(this.renderer);
         this.button.style.backgroundImage = 'url("horto_resized.png")';
         this.button.style.height = '32px';
         this.button.style.width = '29px';
-
         this.button.style.color = 'black';
         this.button.style.fontWeight = '900';
         this.button.textContent = 'INICIAR';
-        this.button.addEventListener('click', () => {
-            let myAudio = new Audio();
-            myAudio.src = 'audio/sound.mp3';
-            myAudio.autoplay = true;
-        })
+        this.button.addEventListener('click', this.runAudio);
+        
         document.body.appendChild(this.button);
 
         window.addEventListener('resize', () => {
@@ -110,6 +100,13 @@ class App {
 
         this.render();
     }
+
+    runAudio() {
+        let myAudio = new Audio();
+        myAudio.src = 'audio/sound.mp3';
+        myAudio.autoplay = true;
+    }
+    
 
     render() {
         let dt = this.clock.getDelta();
