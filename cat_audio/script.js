@@ -76,11 +76,6 @@ class App {
             }
         )
 
-        let myAudio = new Audio();
-        myAudio.src = 'audio/sound.mp3';
-        myAudio.autoplay = true;
-
-
         let controller = this.renderer.xr.getController(0);
         this.scene.add(controller);
 
@@ -99,6 +94,11 @@ class App {
         this.button.style.color = 'black';
         this.button.style.fontWeight = '900';
         this.button.textContent = 'INICIAR';
+        this.button.addEventListener('click', () => {
+            let myAudio = new Audio();
+            myAudio.src = 'audio/sound.mp3';
+            myAudio.autoplay = true;
+        })
         document.body.appendChild(this.button);
 
         window.addEventListener('resize', () => {
