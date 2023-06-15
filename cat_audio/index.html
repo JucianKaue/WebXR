@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <audio id='audio1' src="audio/Untitled video - Made with Clipchamp (online-audio-converter.com).mp3" type="audio/mp3"></audio>
+    <script type="module">
+        import {App} from './script.js';
+
+        document.addEventListener("DOMContentLoaded", function(){
+            const app = new App();
+            window.app = app;
+        })
+    </script>
+</body>
+</html>
