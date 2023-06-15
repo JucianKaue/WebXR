@@ -68,7 +68,6 @@ class App {
                 self.scene.add(self.cat);
 
                 self.loadingBar.visible = false;
-                this.audio(true);
                 self.renderer.setAnimationLoop(self.render.bind(self));
             }, function(xhr) {
                 self.loadingBar.progress = (xhr.loaded / xhr.total);
@@ -76,6 +75,10 @@ class App {
                 console.log('An error accured')
             }
         )
+
+        let myAudio = new Audio();
+        myAudio.src = 'audio/sound.mp3';
+        myAudio.autoplay = true;
 
 
         let controller = this.renderer.xr.getController(0);
@@ -105,7 +108,7 @@ class App {
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        this.render()
+        this.render();
     }
 
     render() {
@@ -115,16 +118,6 @@ class App {
         this.renderer.render(this.scene, this.camera);
     }
 
-    audio(run) {
-        audio = document.getElementById('audio1')
-        if (run) {
-            this.audio.play()
-        } else {
-            this.audio.pause()
-        }
-
-
-    }
 }
 
 export { App };
