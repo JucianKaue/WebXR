@@ -103,7 +103,7 @@ class App {
 
     runAudio() {
         let myAudio = new Audio();
-        myAudio.src = 'audio/felix.mp3';
+        myAudio.src = 'macacoprego.mp3';
         myAudio.autoplay = true;
     }
     
