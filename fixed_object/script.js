@@ -113,7 +113,8 @@ class App {
         this.cat.position.copy( this.camera.position );
         this.cat.rotation.copy( this.camera.rotation );
         this.cat.updateMatrix();
-        this.cat.translateZ( - 5 );
+        this.cat.translateZ(-3);
+        this.cat.translateY(-1);
         this.stats.update();
         this.mixer.update(dt);
         this.renderer.render(this.scene, this.camera);
