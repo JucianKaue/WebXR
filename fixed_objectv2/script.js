@@ -113,11 +113,10 @@ class App {
         } else if (camera - object < 0) {
             return object + 0.01
         }
-        return object;
+        return camera;
     }
 
     moveObject() {
-        
         console.log(this.cat.position)
         this.cat.position.copy({
             x: this.getPosition(this.camera.position.x, this.camera.position.x),
