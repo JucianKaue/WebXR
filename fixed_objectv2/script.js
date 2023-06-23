@@ -76,7 +76,6 @@ class App {
             }
         )
 
-
         let controller = this.renderer.xr.getController(0);
         this.scene.add(controller);
 
@@ -99,7 +98,6 @@ class App {
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        this.camera.lookAt(this.cat)
         this.render();
     }
 
@@ -108,10 +106,39 @@ class App {
         myAudio.src = 'quati.mp3';
         myAudio.autoplay = true;
     }
+
+    getPosition(camera, object) {
+        if (camera - object > 0) {
+            return object - 0.01
+        } else if (camera - object < 0) {
+            return object
+        }
+        return object;
+    }
+
+    moveObject() {
+        
+        console.log(this.cat.position)
+        this.cat.position.copy({
+            x: this.getPosition(this.camera.position.x, this.camera.position.x),
+            y: this.getPosition(this.camera.position.y, this.camera.position.y),
+            z: this.getPosition(this.camera.position.z, this.camera.position.z),
+        });
+
+        this.cat.rotation.copy( {
+            x: this.getPosition(this.camera.rotation.x, this.camera.rotation.x),
+            y: this.getPosition(this.camera.rotation.x, this.camera.rotation.y),
+            z: this.getPosition(this.camera.rotation.x, this.camera.rotation.z),
+        } );
+        this.cat.updateMatrix();
+        this.cat.translateZ(-3);
+        this.cat.translateY(-1);
+    }
     
 
     render() {
-        let dt = this.clock.getDelta();
+        let dt = this.clock.getDelta()
+        this.moveObject();
         this.stats.update();
         this.mixer.update(dt);
         this.renderer.render(this.scene, this.camera);
