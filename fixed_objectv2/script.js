@@ -111,7 +111,7 @@ class App {
         if (camera - object > 0) {
             return object - 0.01
         } else if (camera - object < 0) {
-            return object
+            return object + 0.01
         }
         return object;
     }
@@ -127,8 +127,8 @@ class App {
 
         this.cat.rotation.copy( {
             x: this.getPosition(this.camera.rotation.x, this.camera.rotation.x),
-            y: this.getPosition(this.camera.rotation.x, this.camera.rotation.y),
-            z: this.getPosition(this.camera.rotation.x, this.camera.rotation.z),
+            y: this.getPosition(this.camera.rotation.y, this.camera.rotation.y),
+            z: this.getPosition(this.camera.rotation.z, this.camera.rotation.z),
         } );
         this.cat.updateMatrix();
         this.cat.translateZ(-3);
