@@ -76,19 +76,27 @@ class App {
             }
         )
 
+
         let controller = this.renderer.xr.getController(0);
         this.scene.add(controller);
 
+        // const boxGeometry = new THREE.BoxGeometry();
+        // const boxMaterial = new THREE.MeshBasicMaterial({color: 0x00FF00});
+        // const box = new THREE.Mesh(boxGeometry, boxMaterial);
+        // box.position.set(0, 3, 0);
+        // this.scene.add(box);
+
         this.renderer.xr.enabled = true;
-        this.button = ARButton.createButton(this.renderer);
+        this.button = ARButton.createButton(this.renderer, { sessionInit: {
+            requiredFeatures: ['hit-test']
+        }});
         this.button.style.backgroundImage = 'url("horto_resized.png")';
         this.button.style.height = '32px';
         this.button.style.width = '29px';
+
         this.button.style.color = 'black';
         this.button.style.fontWeight = '900';
         this.button.textContent = 'INICIAR';
-        this.button.addEventListener('click', this.runAudio);
-        
         document.body.appendChild(this.button);
 
         window.addEventListener('resize', () => {
@@ -98,52 +106,65 @@ class App {
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        this.render();
+        this.reticle = new THREE.Mesh(
+            new THREE.RingBufferGeometry(0.15, 0.2, 32).rotateX(-Math.PI/2),
+            new THREE.MeshBasicMaterial()
+        );
+
+        this.reticle.matrixAutoUpdate = false;
+        this.reticle.visible = false;
+        this.scene.add(this.reticle);
+
+        this.render()
     }
 
-    runAudio() {
-        let myAudio = new Audio();
-        myAudio.src = 'quati.mp3';
-        myAudio.autoplay = true;
-    }
+    requestHitTestSource() {
+        const self = this;
+        const session = this.renderer.xr.getSession();
 
-    getPosition(camera, object) {
-        if (camera - object > 0) {
-            return object - 0.01
-        } else if (camera - object < 0) {
-            return object + 0.01
-        }
-        return camera;
-    }
-
-    moveObject() {
-        console.log(this.cat.position)
-        this.cat.position.copy({
-            x: this.getPosition(this.camera.position.x, this.camera.position.x),
-            y: this.getPosition(this.camera.position.y, this.camera.position.y),
-            z: this.getPosition(this.camera.position.z, this.camera.position.z),
+        session.requestReferenceSpace('viewer').then( function(referenceSpace) {
+            session.requestHitTestSource({space: referenceSpace}).then(function(source) {
+                self.hitTestSource = source;
+            })
         });
 
-        this.cat.rotation.copy( {
-            x: this.getPosition(this.camera.rotation.x, this.camera.rotation.x),
-            y: this.getPosition(this.camera.rotation.y, this.camera.rotation.y),
-            z: this.getPosition(this.camera.rotation.z, this.camera.rotation.z),
-        } );
+        session.addEventListener('end', function() {
+            self.hitTestSourceRequested = false;
+            self.hitTestSource = null;
+            self.referenceSpace = null;
+        });
         
-        this.cat.updateMatrix();
-        this.cat.translateZ(-3);
-        this.cat.translateY(-1);
+        this.hitTestSourceRequested = true;
     }
-    
+
+    getHitTestResults() {
+        const hitTestResults = frame.getHitTestResults(this.hitTestSource);
+
+        if (hitTestResults.length) {
+            const referenceSpace = this.renderer.xr.getReferenceSpace();
+            const hit = hitTestResults[0];
+            const pose = hit.getPose(referenceSpace);
+
+            this.reticle.visible = true;
+            this.reticle.matrix.fromArray(pose.transform.matrix);
+        } else {
+            this.reticle.visible = false;
+        }
+    }
 
     render() {
-        let dt = this.clock.getDelta()
-        this.moveObject();
+
+        if (this.hitTestSourceRequested === false) {
+            this.requestHitTestSource()
+        };
+
+
+
+        let dt = this.clock.getDelta();
         this.stats.update();
         this.mixer.update(dt);
         this.renderer.render(this.scene, this.camera);
     }
-
 }
 
 export { App };
